@@ -1,0 +1,5 @@
+{
+  "$schema": "https://dev.wix.com/wix-cli/schemas/wix-config.json",
+  "appId": "db139d5c-04be-4ce9-a081-4ca8dc1be74f",
+  "projectId": "typing-effect"
+}
