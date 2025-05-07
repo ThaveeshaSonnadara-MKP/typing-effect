@@ -3,9 +3,14 @@
   "version": "1.0.0",
   "private": true,
   "dependencies": {
+    "@fortawesome/free-solid-svg-icons": "^6.7.2",
+    "@fortawesome/react-fontawesome": "^0.2.2",
+    "@wix/app-management": "^1.0.81",
     "@wix/dashboard": "^1.3.33",
     "@wix/design-system": "^1.0.0",
-    "@wix/wix-ui-icons-common": "^3.0.0"
+    "@wix/editor": "^1.356.0",
+    "@wix/wix-ui-icons-common": "^3.0.0",
+    "react-to-webcomponent": "^2.0.0"
   },
   "devDependencies": {
     "@types/react": "^16.0.0",
