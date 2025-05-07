@@ -1,0 +1,20 @@
+.alertBanner {
+    background-color: #fff4d9;
+    border-top: 1px solid #f5d382;
+    border-bottom: 1px solid #f5d382;
+    padding: 5px;
+    display: flex;
+    justify-content: center;
+    font-size: 14px;
+    color: #7a5c14;
+    text-align: center;
+}
+
+.eyeIcon {
+    margin-right: 5px;
+    font-size: 18px;
+}
+
+.alertText {
+    font-weight: 500;
+}
