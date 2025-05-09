@@ -1,32 +1,34 @@
-:root {
-  --background-color: #242A35;
-  --text-color: #fcfdfd;
-  --secondary-text-color: #c9c9c9;
-  --code-color: #d7d7d7;
-}
-
-.root {
+.flex {
+  display: flex;
   width: 100%;
   height: 100%;
-  background-color: var(--background-color);
-  color: var(--text-color);
-  box-sizing: border-box;
-  padding: 3rem 1rem;
-  font-size: 14px;
 }
 
-.root h2 {
-  font-size: 1.5rem;
-  margin-bottom: 5px;
+.block {
+  display: block;
+  width: 100%;
+  height: 100%;
 }
 
-.root p {
-  color: var(--secondary-text-color);
+.alignItemsCenter {
+  align-items: center;
 }
 
-.root code {
-  color: var(--code-color);
-  font-size: 0.8rem;
-  font-weight: bolder;
+.justifyContentCenter {
+  justify-content: center;
 }
 
+.textAlignCenter {
+  text-align: center;
+}
+
+.type::after {
+  content: '👈';
+  animation: cursor 1.1s infinite step-start;
+}
+
+@keyframes cursor {
+  50% {
+    opacity: 0;
+  }
+}
