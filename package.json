@@ -10,9 +10,13 @@
     "@wix/design-system": "^1.0.0",
     "@wix/editor": "^1.356.0",
     "@wix/wix-ui-icons-common": "^3.0.0",
+    "grapheme-splitter": "^1.0.4",
+    "lodash": "^4.17.21",
+    "react-simple-typewriter": "^3.0.1",
     "react-to-webcomponent": "^2.0.0"
   },
   "devDependencies": {
+    "@types/lodash": "^4.17.16",
     "@types/react": "^16.0.0",
     "@types/react-dom": "^16.0.0",
     "@wix/cli": "^1.0.0",
