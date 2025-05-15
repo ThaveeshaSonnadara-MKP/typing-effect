@@ -1,17 +1,12 @@
-import React, {
-  useCallback,
-  useEffect,
-  useRef,
-  useState,
-  type FC,
-} from "react";
+import React, { useEffect, useMemo, useState, type FC } from "react";
 import ReactDOM from "react-dom";
 import reactToWebComponent from "react-to-webcomponent";
 import GraphemeSplitter from "grapheme-splitter";
-import { WixDesignSystemProvider, Box } from "@wix/design-system";
 import "@wix/design-system/styles.global.css";
-import styles from "./element.module.css";
 import { Typewriter } from "react-simple-typewriter";
+import { WidgetData } from "../../../../types/common-types";
+import { DEFAULT_WIDGET_DATA } from "../../../../Utils/constants";
+import { getHtmlTag } from "../../../../Utils/tools";
 
 const SPLITTER = new GraphemeSplitter();
 
@@ -19,64 +14,8 @@ interface Props {
   widgetData?: string;
 }
 
-type StaticTextProps = {
-  text: string;
-  fontSize: string;
-  fontColor: string;
-  fontWeight: string;
-};
-
-type DynamicTextProps = {
-  texts: string[];
-  fontSize: string;
-  fontColor: string;
-  fontWeight: string;
-};
-
-type WidgetData = {
-  staticText: StaticTextProps;
-  dynamicText: DynamicTextProps;
-  backgroundColor: string;
-  textElementType: string;
-  textsGap: string;
-  alignItemsCenter: boolean;
-  textAlignCenter: boolean;
-  justifyContentCenter: boolean;
-  displayFlex: boolean;
-};
-
-const DEFAULT_SEQUENCE = [
-  "We produce food for Mice",
-  "We produce food for Hamsters",
-  "We produce food for Guinea Pigs",
-  "We produce food for Chinchillas",
-];
-
-const DYNAMIC_TEXT_PROPS: DynamicTextProps = {
-  texts: DEFAULT_SEQUENCE,
-  fontSize: "1rem",
-  fontColor: "",
-  fontWeight: "Bold",
-};
-
-const DEFAULT_STATIC_TEXT_PROPS: StaticTextProps = {
-  text: "Welcome...",
-  fontSize: "1rem",
-  fontColor: "#000000",
-  fontWeight: "Normal",
-};
-
-const DEFAULT_WIDGET_DATA: WidgetData = {
-  staticText: DEFAULT_STATIC_TEXT_PROPS,
-  dynamicText: DYNAMIC_TEXT_PROPS,
-  backgroundColor: "#121212",
-  textElementType: "h1",
-  textsGap: "5px",
-  alignItemsCenter: true,
-  textAlignCenter: false,
-  justifyContentCenter: true,
-  displayFlex: true,
-};
+const VALID_TEXT_ALIGN_VALUES = ["left", "right", "center", "justify"] as const;
+type TextAlign = (typeof VALID_TEXT_ALIGN_VALUES)[number];
 
 const TypingEffectWidget: FC<Props> = ({ widgetData }) => {
   // STATES
@@ -85,363 +24,86 @@ const TypingEffectWidget: FC<Props> = ({ widgetData }) => {
 
   // USE_EFFECTS
   useEffect(() => {
-    console.log("Running Use Effect...");
+    console.log("Fetching widget data...");
 
-    if (widgetData) {
-      const widgetDataObj = JSON.parse(widgetData);
-      console.log("widgetData Object:", widgetDataObj);
+    if (!widgetData) return;
 
-      if (widgetDataObj) {
+    try {
+      const parsed = JSON.parse(widgetData);
+      if (parsed) {
+        setWidgetDataState(parsed);
+
+        console.log("Updated widget data:", parsed);
+        console.log("Widget data fetched successfully.");
       }
-
-      setWidgetDataState(widgetDataObj);
-    } else {
-      setWidgetDataState(DEFAULT_WIDGET_DATA);
+    } catch (e) {
+      console.error("Error in widget-data fetch.", e);
     }
-  }, []);
+  }, [widgetData]);
 
-  const splitUsersInputTexts = useCallback(() => {
-    const texts: string[] = widgetDataState.dynamicText.texts;
-    const formattedArray: string[] = [];
-    texts.forEach((text) => {
-      const result: string = SPLITTER.splitGraphemes(text).join("");
-      formattedArray.push(result);
-    });
+  const typedWords = useMemo(() => {
+    const texts = widgetDataState.dynamicText.texts || [""];
+    return texts.map((t) => SPLITTER.splitGraphemes(t).join(""));
+  }, [widgetDataState.dynamicText.texts]);
 
-    console.log("SPLITTER Result:", formattedArray);
-    return formattedArray;
-  }, [widgetDataState, setWidgetDataState]);
+  function getValidTextAlign(value?: string): TextAlign {
+    const val = value?.toLowerCase();
+    return VALID_TEXT_ALIGN_VALUES.includes(val as TextAlign)
+      ? (val as TextAlign)
+      : "center";
+  }
+
+  function renderTextElement(tagName: string) {
+    const Tag = tagName as keyof JSX.IntrinsicElements;
+
+    return (
+      <Tag
+        style={{
+          color: widgetDataState.staticText.fontColor,
+          fontWeight: widgetDataState.staticText.fontWeight.toLowerCase(),
+          fontSize: widgetDataState.staticText.fontSize,
+        }}
+      >
+        {widgetDataState.staticText.text}
+        <span
+          style={{
+            color: widgetDataState.dynamicText.fontColor,
+            fontWeight: widgetDataState.dynamicText.fontWeight.toLowerCase(),
+            fontSize: widgetDataState.dynamicText.fontSize,
+            marginLeft: widgetDataState.staticText.text
+              ? widgetDataState.textsGap
+              : 0,
+          }}
+        >
+          <Typewriter
+            words={typedWords}
+            loop={widgetDataState.animationOptions?.loop ?? 0}
+            cursor={widgetDataState.animationOptions?.cursor ?? true}
+            cursorStyle={widgetDataState.animationOptions?.cursorStyle ?? "|"}
+            typeSpeed={widgetDataState.animationOptions?.typeSpeed ?? 70}
+            deleteSpeed={widgetDataState.animationOptions?.deleteSpeed ?? 50}
+            delaySpeed={widgetDataState.animationOptions?.delaySpeed ?? 1000}
+          />
+        </span>
+      </Tag>
+    );
+  }
 
   return (
     <div
       style={{
+        width: "100%",
+        height: "100%",
         backgroundColor: `${widgetDataState?.backgroundColor || "transparent"}`,
+        display: `${widgetDataState?.display?.toLowerCase() || "flex"}`,
+        alignItems: `${widgetDataState?.alignItems?.toLowerCase() || "center"}`,
+        justifyContent: `${
+          widgetDataState?.justifyContent?.toLowerCase() || "center"
+        }`,
+        textAlign: getValidTextAlign(widgetDataState?.textAlignProp),
       }}
-      className={`${
-        widgetDataState?.displayFlex ? styles.flex : styles.block
-      } ${widgetDataState?.alignItemsCenter ? styles.alignItemsCenter : ""} ${
-        widgetDataState?.justifyContentCenter ? styles.justifyContentCenter : ""
-      } ${widgetDataState?.textAlignCenter ? styles.textAlignCenter : ""}`}
     >
-      {(() => {
-        switch (widgetDataState?.textElementType) {
-          case "h1":
-            return (
-              <h1
-                style={{
-                  color: `${widgetDataState?.staticText?.fontColor}`,
-                  fontWeight: `${widgetDataState?.staticText?.fontWeight}`,
-                  fontSize: `${widgetDataState?.staticText?.fontSize}`,
-                }}
-              >
-                {widgetDataState?.staticText?.text}
-                <span
-                  style={{
-                    color: `${widgetDataState?.dynamicText?.fontColor}`,
-                    fontWeight: `${widgetDataState?.dynamicText?.fontWeight}`,
-                    fontSize: `${widgetDataState?.dynamicText?.fontSize}`,
-                    marginLeft: `${
-                      widgetDataState?.staticText?.text
-                        ? widgetDataState?.textsGap
-                        : 0
-                    }`,
-                  }}
-                >
-                  {/* Style will be inherited from the parent element */}
-                  <Typewriter
-                    words={splitUsersInputTexts()}
-                    loop={0}
-                    cursor
-                    cursorStyle="_"
-                    typeSpeed={70}
-                    deleteSpeed={50}
-                    delaySpeed={1000}
-                  />
-                </span>
-              </h1>
-            );
-          case "h2":
-            return (
-              <h2
-                style={{
-                  color: `${widgetDataState?.staticText?.fontColor}`,
-                  fontWeight: `${widgetDataState?.staticText?.fontWeight}`,
-                  fontSize: `${widgetDataState?.staticText?.fontSize}`,
-                }}
-              >
-                {widgetDataState?.staticText?.text}
-                <span
-                  style={{
-                    color: `${widgetDataState?.dynamicText?.fontColor}`,
-                    fontWeight: `${widgetDataState?.dynamicText?.fontWeight}`,
-                    fontSize: `${widgetDataState?.dynamicText?.fontSize}`,
-                    marginLeft: `${
-                      widgetDataState?.staticText?.text
-                        ? widgetDataState?.textsGap
-                        : 0
-                    }`,
-                  }}
-                >
-                  {/* Style will be inherited from the parent element */}
-                  <Typewriter
-                    words={splitUsersInputTexts()}
-                    loop={0}
-                    cursor
-                    cursorStyle="_"
-                    typeSpeed={70}
-                    deleteSpeed={50}
-                    delaySpeed={1000}
-                  />
-                </span>
-              </h2>
-            );
-          case "h3":
-            return (
-              <h3
-                style={{
-                  color: `${widgetDataState?.staticText?.fontColor}`,
-                  fontWeight: `${widgetDataState?.staticText?.fontWeight}`,
-                  fontSize: `${widgetDataState?.staticText?.fontSize}`,
-                }}
-              >
-                {widgetDataState?.staticText?.text}
-                <span
-                  style={{
-                    color: `${widgetDataState?.dynamicText?.fontColor}`,
-                    fontWeight: `${widgetDataState?.dynamicText?.fontWeight}`,
-                    fontSize: `${widgetDataState?.dynamicText?.fontSize}`,
-                    marginLeft: `${
-                      widgetDataState?.staticText?.text
-                        ? widgetDataState?.textsGap
-                        : 0
-                    }`,
-                  }}
-                >
-                  {/* Style will be inherited from the parent element */}
-                  <Typewriter
-                    words={splitUsersInputTexts()}
-                    loop={0}
-                    cursor
-                    cursorStyle="_"
-                    typeSpeed={70}
-                    deleteSpeed={50}
-                    delaySpeed={1000}
-                  />
-                </span>
-              </h3>
-            );
-          case "h4":
-            return (
-              <h4
-                style={{
-                  color: `${widgetDataState?.staticText?.fontColor}`,
-                  fontWeight: `${widgetDataState?.staticText?.fontWeight}`,
-                  fontSize: `${widgetDataState?.staticText?.fontSize}`,
-                }}
-              >
-                {widgetDataState?.staticText?.text}
-                <span
-                  style={{
-                    color: `${widgetDataState?.dynamicText?.fontColor}`,
-                    fontWeight: `${widgetDataState?.dynamicText?.fontWeight}`,
-                    fontSize: `${widgetDataState?.dynamicText?.fontSize}`,
-                    marginLeft: `${
-                      widgetDataState?.staticText?.text
-                        ? widgetDataState?.textsGap
-                        : 0
-                    }`,
-                  }}
-                >
-                  {/* Style will be inherited from the parent element */}
-                  <Typewriter
-                    words={splitUsersInputTexts()}
-                    loop={0}
-                    cursor
-                    cursorStyle="_"
-                    typeSpeed={70}
-                    deleteSpeed={50}
-                    delaySpeed={1000}
-                  />
-                </span>
-              </h4>
-            );
-          case "h5":
-            return (
-              <h5
-                style={{
-                  color: `${widgetDataState?.staticText?.fontColor}`,
-                  fontWeight: `${widgetDataState?.staticText?.fontWeight}`,
-                  fontSize: `${widgetDataState?.staticText?.fontSize}`,
-                }}
-              >
-                {widgetDataState?.staticText?.text}
-                <span
-                  style={{
-                    color: `${widgetDataState?.dynamicText?.fontColor}`,
-                    fontWeight: `${widgetDataState?.dynamicText?.fontWeight}`,
-                    fontSize: `${widgetDataState?.dynamicText?.fontSize}`,
-                    marginLeft: `${
-                      widgetDataState?.staticText?.text
-                        ? widgetDataState?.textsGap
-                        : 0
-                    }`,
-                  }}
-                >
-                  {/* Style will be inherited from the parent element */}
-                  <Typewriter
-                    words={splitUsersInputTexts()}
-                    loop={0}
-                    cursor
-                    cursorStyle="_"
-                    typeSpeed={70}
-                    deleteSpeed={50}
-                    delaySpeed={1000}
-                  />
-                </span>
-              </h5>
-            );
-          case "h6":
-            return (
-              <h6
-                style={{
-                  color: `${widgetDataState?.staticText?.fontColor}`,
-                  fontWeight: `${widgetDataState?.staticText?.fontWeight}`,
-                  fontSize: `${widgetDataState?.staticText?.fontSize}`,
-                }}
-              >
-                {widgetDataState?.staticText?.text}
-                <span
-                  style={{
-                    color: `${widgetDataState?.dynamicText?.fontColor}`,
-                    fontWeight: `${widgetDataState?.dynamicText?.fontWeight}`,
-                    fontSize: `${widgetDataState?.dynamicText?.fontSize}`,
-                    marginLeft: `${
-                      widgetDataState?.staticText?.text
-                        ? widgetDataState?.textsGap
-                        : 0
-                    }`,
-                  }}
-                >
-                  {/* Style will be inherited from the parent element */}
-                  <Typewriter
-                    words={splitUsersInputTexts()}
-                    loop={0}
-                    cursor
-                    cursorStyle="_"
-                    typeSpeed={70}
-                    deleteSpeed={50}
-                    delaySpeed={1000}
-                  />
-                </span>
-              </h6>
-            );
-          case "p":
-            return (
-              <p
-                style={{
-                  color: `${widgetDataState?.staticText?.fontColor}`,
-                  fontWeight: `${widgetDataState?.staticText?.fontWeight}`,
-                  fontSize: `${widgetDataState?.staticText?.fontSize}`,
-                }}
-              >
-                {widgetDataState?.staticText?.text}
-                <span
-                  style={{
-                    color: `${widgetDataState?.dynamicText?.fontColor}`,
-                    fontWeight: `${widgetDataState?.dynamicText?.fontWeight}`,
-                    fontSize: `${widgetDataState?.dynamicText?.fontSize}`,
-                    marginLeft: `${
-                      widgetDataState?.staticText?.text
-                        ? widgetDataState?.textsGap
-                        : 0
-                    }`,
-                  }}
-                >
-                  {/* Style will be inherited from the parent element */}
-                  <Typewriter
-                    words={splitUsersInputTexts()}
-                    loop={0}
-                    cursor
-                    cursorStyle="_"
-                    typeSpeed={70}
-                    deleteSpeed={50}
-                    delaySpeed={1000}
-                  />
-                </span>
-              </p>
-            );
-          case "span":
-            return (
-              <span
-                style={{
-                  color: `${widgetDataState?.staticText?.fontColor}`,
-                  fontWeight: `${widgetDataState?.staticText?.fontWeight}`,
-                  fontSize: `${widgetDataState?.staticText?.fontSize}`,
-                }}
-              >
-                {widgetDataState?.staticText?.text}
-                <span
-                  style={{
-                    color: `${widgetDataState?.dynamicText?.fontColor}`,
-                    fontWeight: `${widgetDataState?.dynamicText?.fontWeight}`,
-                    fontSize: `${widgetDataState?.dynamicText?.fontSize}`,
-                    marginLeft: `${
-                      widgetDataState?.staticText?.text
-                        ? widgetDataState?.textsGap
-                        : 0
-                    }`,
-                  }}
-                >
-                  {/* Style will be inherited from the parent element */}
-                  <Typewriter
-                    words={splitUsersInputTexts()}
-                    loop={0}
-                    cursor
-                    cursorStyle="_"
-                    typeSpeed={70}
-                    deleteSpeed={50}
-                    delaySpeed={1000}
-                  />
-                </span>
-              </span>
-            );
-          default:
-            return (
-              <h1
-                style={{
-                  color: `${widgetDataState?.staticText?.fontColor}`,
-                  fontWeight: `${widgetDataState?.staticText?.fontWeight}`,
-                  fontSize: `${widgetDataState?.staticText?.fontSize}`,
-                }}
-              >
-                {widgetDataState?.staticText?.text}
-                <span
-                  style={{
-                    color: `${widgetDataState?.dynamicText?.fontColor}`,
-                    fontWeight: `${widgetDataState?.dynamicText?.fontWeight}`,
-                    fontSize: `${widgetDataState?.dynamicText?.fontSize}`,
-                    marginLeft: `${
-                      widgetDataState?.staticText?.text
-                        ? widgetDataState?.textsGap
-                        : 0
-                    }`,
-                  }}
-                >
-                  {/* Style will be inherited from the parent element */}
-                  <Typewriter
-                    words={splitUsersInputTexts()}
-                    loop={0}
-                    cursor
-                    cursorStyle="_"
-                    typeSpeed={70}
-                    deleteSpeed={50}
-                    delaySpeed={1000}
-                  />
-                </span>
-              </h1>
-            );
-        }
-      })()}
+      {renderTextElement(getHtmlTag(widgetDataState?.textElementType))}
     </div>
   );
 };
