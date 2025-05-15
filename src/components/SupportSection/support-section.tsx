@@ -1,5 +1,5 @@
 import React, { FC } from "react";
-import { FormField, Button, SidePanel } from "@wix/design-system";
+import { FormField, Button, SidePanel, Tooltip } from "@wix/design-system";
 import * as Icons from "@wix/wix-ui-icons-common";
 
 interface Props {
@@ -36,57 +36,53 @@ const SupportSection: FC<Props> = ({
       }
     >
       <SidePanel.Field divider="auto">
-        <FormField
-          infoContent="Please tell us what you think about the app."
-          showInfoIconOnHover
-        >
-          <Button
-            size="medium"
-            skin="premium"
-            fullWidth
-            priority="secondary"
-            prefixIcon={<Icons.Heart />}
-            onClick={() => window.open(reviewUrl, "_blank")}
-          >
-            Add a Review
-          </Button>
+        <FormField>
+          <Tooltip content="Please tell us what you think about the app.">
+            <Button
+              size="medium"
+              skin="premium"
+              fullWidth
+              priority="secondary"
+              prefixIcon={<Icons.Heart />}
+              onClick={() => window.open(reviewUrl, "_blank")}
+            >
+              Add a Review
+            </Button>
+          </Tooltip>
         </FormField>
       </SidePanel.Field>
 
       <SidePanel.Field divider="auto">
-        <FormField
-          label="Explore Resources & Contact Us"
-          infoContent="Please click this button to get support from the support team."
-          showInfoIconOnHover
-        >
-          <Button
-            size="medium"
-            skin="standard"
-            fullWidth
-            priority="secondary"
-            prefixIcon={<Icons.HelpCircle />}
-            onClick={() => window.open(supportUrl, "_blank")}
-          >
-            Support Center
-          </Button>
+        <FormField label="Explore Resources & Contact Us">
+          <Tooltip content="Please click this button to get support from the support team.">
+            <Button
+              size="medium"
+              skin="standard"
+              fullWidth
+              priority="secondary"
+              prefixIcon={<Icons.HelpCircle />}
+              onClick={() => window.open(supportUrl, "_blank")}
+            >
+              Support Center
+            </Button>
+          </Tooltip>
         </FormField>
       </SidePanel.Field>
 
       <SidePanel.Field divider="auto">
-        <FormField
-          infoContent="Click this button to view more apps from Market Push Apps."
-          showInfoIconOnHover
-        >
-          <Button
-            size="medium"
-            skin="standard"
-            fullWidth
-            priority="secondary"
-            prefixIcon={<Icons.ExternalLink />}
-            onClick={() => window.open(moreAppsUrl, "_blank")}
-          >
-            More great apps
-          </Button>
+        <FormField infoContent="" showInfoIconOnHover>
+          <Tooltip content="Click this button to view more apps from Market Push Apps.">
+            <Button
+              size="medium"
+              skin="standard"
+              fullWidth
+              priority="secondary"
+              prefixIcon={<Icons.ExternalLink />}
+              onClick={() => window.open(moreAppsUrl, "_blank")}
+            >
+              More great apps
+            </Button>
+          </Tooltip>
         </FormField>
       </SidePanel.Field>
     </SidePanel.Section>
