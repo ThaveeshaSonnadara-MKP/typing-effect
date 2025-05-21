@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState, type FC } from "react";
+import React, { useEffect, useState, type FC } from "react";
 import ReactDOM from "react-dom";
 import reactToWebComponent from "react-to-webcomponent";
 import GraphemeSplitter from "grapheme-splitter";
