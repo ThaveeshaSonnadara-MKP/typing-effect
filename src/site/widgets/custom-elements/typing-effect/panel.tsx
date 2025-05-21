@@ -79,14 +79,14 @@ const Panel: FC = () => {
 
   // USE EFFECT - FETCH DATA
   useEffect(() => {
-    console.log("Fetching widget data...");
+    // console.log("Fetching widget data...");
 
     widget
       .getProp("widget-data")
       .then((widgetData) => {
         const widgetDataObj: WidgetData =
           JSON.parse(widgetData) || DEFAULT_WIDGET_DATA;
-        console.log("widgetDataObj (fetched data):", widgetDataObj);
+        // console.log("widgetDataObj (fetched data):", widgetDataObj);
 
         dispatch({ type: "SET_WIDGET_DATA", payload: widgetDataObj });
 
@@ -127,7 +127,7 @@ const Panel: FC = () => {
 
         const staticTextFontWeightSelectedId =
           memoizedFontWeightOptions?.find((opt) => opt.value === staticWeight)
-            ?.id || "fw-10";
+            ?.id || "fw-1";
 
         dispatch({
           type: "UPDATE_FIELD",
@@ -141,7 +141,7 @@ const Panel: FC = () => {
 
         const animTextFontWeightSelectedId =
           memoizedFontWeightOptions?.find((opt) => opt.value === animWeight)
-            ?.id || "fw-10";
+            ?.id || "fw-1";
 
         dispatch({
           type: "UPDATE_FIELD",
@@ -281,7 +281,7 @@ const Panel: FC = () => {
           payload: widgetDataObj?.backgroundColor,
         });
 
-        console.log("Widget-data fetched successfully.");
+        // console.log("Widget-data fetched successfully.");
         setLoading(false);
         setWidgetDataFetchComplete(true);
       })
@@ -336,7 +336,7 @@ const Panel: FC = () => {
       },
     };
 
-    console.log("updatedWidgetData (set widget props):", updatedWidgetData);
+    // console.log("updatedWidgetData (set widget props):", updatedWidgetData);
 
     if (
       !checkAnimTxtFontSizeInputRange().status &&
@@ -776,7 +776,7 @@ const Panel: FC = () => {
         dispatch({
           type: "UPDATE_FIELD",
           key: "staticTextFontWeight",
-          payload: staticTextFontWeightSelectedId || "fw-10",
+          payload: staticTextFontWeightSelectedId || "fw-1",
         });
       }
     } catch (error) {
@@ -1141,7 +1141,7 @@ const Panel: FC = () => {
                   direction="vertical"
                 >
                   {/* TEXT STYLE DROPDOWN */}
-                  <FormField
+                  {/* <FormField
                     label="Text Style"
                     infoContent="Select the text style for both static and animation texts."
                     infoTooltipProps={{
@@ -1160,7 +1160,7 @@ const Panel: FC = () => {
                         dynamicWidth: true,
                       }}
                     />
-                  </FormField>
+                  </FormField> */}
                   {/* TEXT ALIGN DROPDOWN */}
                   <FormField
                     label="Text Alignment"
@@ -1273,9 +1273,7 @@ const Panel: FC = () => {
               <Box className={styles.box} marginBottom={3}>
                 <FieldSet
                   legend={
-                    <h3 style={{ fontWeight: "bold" }}>
-                      Design Static Text Alone
-                    </h3>
+                    <h3 style={{ fontWeight: "bold" }}>Design Static Text</h3>
                   }
                   gap="large"
                   alignment="center"
@@ -1381,7 +1379,7 @@ const Panel: FC = () => {
                 <FieldSet
                   legend={
                     <h3 style={{ fontWeight: "bold" }}>
-                      Design Animation Text Alone
+                      Design Animation Text
                     </h3>
                   }
                   gap="large"
