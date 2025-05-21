@@ -9,7 +9,7 @@ const APP_ID = "db139d5c-04be-4ce9-a081-4ca8dc1be74f";
  */
 export async function getSubscription() {
     const response = await appInstances.getAppInstance();
-    console.log("response [getAppInstance]:", response);
+    // console.log("response [getAppInstance]:", response);
 
     const instance = response.instance;
 
