@@ -10,14 +10,16 @@
     "@wix/editor": "^1.365.0",
     "@wix/wix-ui-icons-common": "^3.73.0",
     "grapheme-splitter": "^1.0.4",
+    "react-fontpicker-ts": "^1.2.0",
     "react-simple-typewriter": "^5.0.1",
     "react-to-webcomponent": "^2.0.1"
   },
   "devDependencies": {
+    "@types/lodash.debounce": "^4.0.9",
     "@types/react": "^18.3.3",
     "@types/react-dom": "^18.3.3",
-    "@wix/cli": "^1.1.88",
-    "@wix/cli-app": "^1.1.88",
+    "@wix/cli": "^1.1.94",
+    "@wix/cli-app": "^1.1.94",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "typescript": "~5.8.2"
