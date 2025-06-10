@@ -1,6 +1,7 @@
-import React, { FC } from "react";
-import { FormField, Button, SidePanel, Tooltip } from "@wix/design-system";
-import * as Icons from "@wix/wix-ui-icons-common";
+import React, { FC } from 'react';
+
+import { Button, FormField, SidePanel, Tooltip } from '@wix/design-system';
+import * as Icons from '@wix/wix-ui-icons-common';
 
 interface Props {
   instanceId: string;
