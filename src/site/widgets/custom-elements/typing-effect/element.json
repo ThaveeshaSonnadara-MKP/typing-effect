@@ -7,7 +7,7 @@
     "allowStretch": true
   },
   "height": {
-    "defaultHeight": 200
+    "defaultHeight": 50
   },
   "installation": {
     "autoAddToSite": false
@@ -15,7 +15,7 @@
   "presets": [
     {
       "id": "7ea72df7-dd83-4792-9664-b30d6cf05e2b",
-      "thumbnailUrl": "../../../../assets/typing-effect/thumbnail.png"
+      "thumbnailUrl": "https://static.wixstatic.com/media/01f767_919814e8db164251bcbc835cfd79e809~mv2.png"
     }
   ]
 }
