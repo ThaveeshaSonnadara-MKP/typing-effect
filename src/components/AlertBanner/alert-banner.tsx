@@ -1,7 +1,9 @@
-import React, { FC } from "react";
-import styles from "./alert-banner.module.css";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faEye } from "@fortawesome/free-solid-svg-icons";
+import React, { FC } from 'react';
+
+import { faEye } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+
+import styles from './alert-banner.module.css';
 
 type Props = {
   showBanner: boolean | undefined;
