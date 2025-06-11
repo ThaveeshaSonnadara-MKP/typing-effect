@@ -1,4 +1,4 @@
-import { getCssPropertyValuesAvailable } from "./get-css-properties";
+import { getCssPropertyValuesAvailable } from './get-css-properties';
 
 export function getIdByValue(array: Array<{ id: number, value: string }>, value: string): number | undefined {
     const match = array.find(option => option.value === value);
