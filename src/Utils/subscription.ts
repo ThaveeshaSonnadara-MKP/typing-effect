@@ -1,4 +1,6 @@
-import { appInstances } from "@wix/app-management";
+import { appInstances } from '@wix/app-management';
+
+import { Subscription } from '../types/common-types';
 
 const APP_ID = "db139d5c-04be-4ce9-a081-4ca8dc1be74f";
 
@@ -7,7 +9,7 @@ const APP_ID = "db139d5c-04be-4ce9-a081-4ca8dc1be74f";
  *@description Returns the subscription of the user. Only use for freemium apps, do not use for trial apps.
  *@returns json
  */
-export async function getSubscription() {
+export async function getSubscription(): Promise<Subscription> {
     const response = await appInstances.getAppInstance();
     // console.log("response [getAppInstance]:", response);
 
