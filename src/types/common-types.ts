@@ -1,13 +1,30 @@
+import { appInstances } from '@wix/app-management';
+
+import { VALID_TEXT_ALIGN_VALUES } from '../constants/common-constants';
+import { DEFAULT_DATA } from '../constants/templates-constants';
+
+export type Subscription = {
+    instance: appInstances.AppInstance | undefined;
+    appId: string;
+    instanceId: string | undefined;
+    plans: appInstances.AvailablePlan[] | undefined;
+    isPremium: boolean;
+    upgradeUrl: string | null;
+    reviewUrl: string;
+}
+
 export type StaticTextProps = {
     text: string;
-    fontSize: string;
+    fontSizeValue: number;
+    fontSizeUnit: string;
     fontColor: string;
     fontWeight: string;
 };
 
 export type DynamicTextProps = {
     texts: string[];
-    fontSize: string;
+    fontSizeValue: number;
+    fontSizeUnit: string;
     fontColor: string;
     fontWeight: string;
 };
@@ -26,12 +43,15 @@ export type WidgetData = {
     dynamicText: DynamicTextProps;
     animationOptions: AnimationProps;
     backgroundColor: string;
-    textElementType: string;
-    textsGap: string;
+    textsGapUnit: string;
+    textsGapValue: number;
     alignItems: string;
     textAlignProp: string;
     justifyContent: string;
     display: string;
+    flexDirection: string;
+    templateId: string;
+    doCustomize: string;
 };
 
 export type AppConstants = {
@@ -42,8 +62,7 @@ export type AppConstants = {
 }
 
 export type State = {
-    widgetData: WidgetData;
-    subscription: Record<string, any>;
+    subscription: Subscription;
     makeWidgetTransparent: boolean;
     widgetBackgroundColor: string;
     showAnimationCursor: boolean;
@@ -57,28 +76,29 @@ export type State = {
     isStaticTextStyleCustomizationsVisible: boolean;
     staticTextFontWeight: string;
     animTextFontWeight: string;
-    selectedTextStyle: string | undefined;
-    display: string | undefined;
-    textAlign: string | undefined;
-    alignVertically: string | undefined;
-    alignHorizontally: string | undefined;
-    textGap: string;
-    textGapUnit: string | undefined;
+    display: string;
+    textAlign: string;
+    alignVertically: string;
+    alignHorizontally: string;
+    textGapUnit: string;
     textGapValue: number;
-    staticTextFontSize: string;
-    staticTextFontSizeUnit: string | undefined;
+    staticTextFontSizeUnit: string;
     staticTextFontSizeValue: number;
-    animTextFontSize: string;
-    animTextFontSizeUnit: string | undefined;
+    animTextFontSizeUnit: string;
     animTextFontSizeValue: number;
     numberOfLoops: number;
     typingSpeed: number;
     deleteSpeed: number;
     animationDelay: number;
+    flexDirection: string;
 };
 
+export type TextAlign = (typeof VALID_TEXT_ALIGN_VALUES)[number];
+
+export type TemplateKey = keyof typeof DEFAULT_DATA;
+
 export type Action =
-    | { type: 'SET_WIDGET_DATA'; payload: WidgetData }
-    | { type: 'SET_SEQUENCE'; payload: string[] }
-    | { type: 'UPDATE_FIELD'; key: keyof State; payload: any }
-    | { type: 'TOGGLE_BOOLEAN'; key: keyof State };
+    | { type: 'SET_FIELD'; field: keyof State; value: any }
+    | { type: 'SET_SEQUENCE'; sequence: string[] }
+    | { type: 'TOGGLE_FIELD'; field: keyof State }
+    | { type: 'RESET_STATE'; newState: State };
