@@ -1,7 +1,7 @@
 const fontWeightOptions = [
-    { id: 'fw-1', value: 'Normal' },
-    { id: 'fw-2', value: 'Bold' },
-    { id: 'fw-3', value: 'Bolder' }
+    { id: 'Normal', value: 'Normal' },
+    { id: 'Bold', value: 'Bold' },
+    { id: 'Bolder', value: 'Bolder' }
 ];
 
 export const getCssPropertyValuesAvailable = (property: string) => {
